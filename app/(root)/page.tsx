@@ -6,6 +6,7 @@ import { getAccount, getAccounts } from "@/lib/actions/bank.actions"
 import { getLoggedInUser } from "@/lib/actions/user.actions"
 
 const Home = async ( {searchParams:{ id, page }}: SearchParamProps) => {
+  const currentPage = Number(page as string) || 1;
   const loggedIn = await getLoggedInUser();
   const accounts = await getAccounts({
       userId: loggedIn?.$id
@@ -29,8 +30,8 @@ const Home = async ( {searchParams:{ id, page }}: SearchParamProps) => {
           />
           <TotalBalanceBox
             accounts={accountsData}
-            totalBanks={accountsData?.totalBanks}
-            totalCurrentBalance={accountsData?.totalCurrentBalance}
+            totalBanks={accounts?.totalBanks}
+            totalCurrentBalance={accounts?.totalCurrentBalance}
             />
         </header>
 
@@ -38,14 +39,14 @@ const Home = async ( {searchParams:{ id, page }}: SearchParamProps) => {
           accounts={accountsData}
           transactions={account?.transactions}
           appwriteItemId={appwriteItemId}
-          page={1}
+          page={currentPage}
         />
       </div>
 
       <RightSideBar
         user={loggedIn}
-        transactions={[]}
-        banks={[{currentBalance:123.50}, {currentBalance:40.40}]}
+        transactions={account?.transactions}
+        banks={accountsData?.slice(0, 2)}
       />
     </section>
   )

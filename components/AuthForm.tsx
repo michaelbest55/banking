@@ -52,7 +52,6 @@ const AuthForm = ({ type }: { type: string }) => {
           ssn: data.ssn!
         }
         const newUser = await signUp(userData);
-        console.log(newUser)
         setUser(newUser);
       }
       if (type === 'sign-in') {
@@ -64,7 +63,6 @@ const AuthForm = ({ type }: { type: string }) => {
 
         if (response) {
           setUser(response);
-          console.log(response)
           router.push('/')
         }
         else{
