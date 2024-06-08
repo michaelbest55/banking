@@ -4,10 +4,14 @@ import TransactionsTable from "@/components/TransactionsTable"
 import { getAccount, getAccounts } from "@/lib/actions/bank.actions";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { formatAmount } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
 const TransactionHistory = async ({ searchParams: {id, page}}: SearchParamProps) => {
   const currentPage = Number(page as string) || 1;
   const loggedIn = await getLoggedInUser();
+  if (!loggedIn) {
+    redirect('/sign-in')
+  }
   const accounts = await getAccounts({ 
     userId: loggedIn.$id 
   })
@@ -18,6 +22,7 @@ const TransactionHistory = async ({ searchParams: {id, page}}: SearchParamProps)
   const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
 
   const account = await getAccount({ appwriteItemId })
+  console.log(account)
 
   const rowsPerPage = 10;
   const totalPages = Math.ceil(account?.transactions.length / rowsPerPage);

@@ -8,7 +8,7 @@ import { formUrlQuery } from "@/lib/utils";
 
 export const Pagination = ({ page, totalPages }: PaginationProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams()!;
+  const searchParams = useSearchParams();
 
   const handleNavigation = (type: "prev" | "next") => {
     const pageNumber = type === "prev" ? page - 1 : page + 1;

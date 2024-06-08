@@ -27,6 +27,11 @@ declare type LoginUser = {
 
 declare type User = {
   $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $permissions: string[];
+  $databaseId: string;
+  $collectionId: string;
   email: string;
   userId: string;
   dwollaCustomerUrl: string;
@@ -84,11 +89,14 @@ declare type Transaction = {
 
 declare type Bank = {
   $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $permissions: string[];
   accountId: string;
   bankId: string;
   accessToken: string;
   fundingSourceUrl: string;
-  userId: string;
+  userId: User;
   shareableId: string;
 };
 
@@ -137,6 +145,21 @@ declare type NewDwollaCustomerParams = {
   ssn: string;
 };
 
+declare type GetAccountsReturn = {
+  data: Account[];
+  totalBanks: number;
+  totalCurrentBalance: number;
+};
+
+declare type GetAccountReturn = {
+  data: Account;
+  transactions: Transaction[];
+};
+
+declare type ExchangePublicTokenReturn = {
+  publicTokenExchange: string;
+}
+
 declare interface CreditCardProps {
   account: Account;
   userName: string;
@@ -179,14 +202,6 @@ declare interface PlaidLinkProps {
   dwollaCustomerId?: string;
 }
 
-// declare type User = sdk.Models.Document & {
-//   accountId: string;
-//   email: string;
-//   name: string;
-//   items: string[];
-//   accessToken: string;
-//   image: string;
-// };
 
 declare interface AuthFormProps {
   type: "sign-in" | "sign-up";

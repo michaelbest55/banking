@@ -106,14 +106,14 @@ export const signUp = async ({ password, ...userData}: SignUpParams) => {
       secure: true,
     });
 
-    return parseStringify(newUser);
+    return parseStringify(newUser) as User;
 
   } catch (error) {
     console.error('Error', error);
   }
 }
 
-export async function getLoggedInUser() {
+export async function getLoggedInUser(): Promise<User | null> {
   try {
     const { account } = await createSessionClient();
     const result =  await account.get();
@@ -242,7 +242,7 @@ const createBankAccount = async ({
         shareableId,
       }
     )
-    return parseStringify(bankAccount);
+    return parseStringify(bankAccount) as Bank;
   } catch (error) {
     console.error('Error', error)
   }
@@ -256,7 +256,7 @@ export const getBanks = async ({ userId }: getBanksProps) => {
       BANK_COLLECTION_ID!,
       [Query.equal("userId", [userId])]
     )
-    return parseStringify(banks.documents);
+    return parseStringify(banks.documents) as Bank[];
   } catch (error) {
     console.error('Error', error)
   }
@@ -272,7 +272,7 @@ export const getBank = async ({ documentId }: getBankProps) => {
       [Query.equal('$id', [documentId])]
     )
 
-    return parseStringify(bank.documents[0]);
+    return parseStringify(bank.documents[0]) as Bank;
   } catch (error) {
     console.log(error)
   }
@@ -288,7 +288,7 @@ export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps)
       [Query.equal('accountId', [accountId])]
     )
 
-    return parseStringify(bank.documents[0]);
+    return parseStringify(bank.documents[0]) as Bank;
   } catch (error) {
     console.log(error)
   }

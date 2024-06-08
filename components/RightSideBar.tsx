@@ -72,7 +72,7 @@ const RightSideBar = ({ user, transactions, banks }: RightSidebarProps) => {
             Top categories
           </h2>
           <div className="space-y-5">
-              {categories.map((category, index) => (
+              {categories.map((category) => (
                 <Category key={category.name} category={category}/>
               ))}
           </div>

@@ -1,7 +1,7 @@
 "use server";
 
 import {
-  CountryCode,
+  CountryCode, Institution,
 } from "plaid";
 
 import { plaidClient } from "../plaid";
@@ -17,7 +17,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
     const banks = await getBanks({ userId });
 
     const accounts = await Promise.all(
-      banks?.map(async (bank: Bank) => {
+      (banks ?? []).map(async (bank: Bank) => {
         // get each account info from plaid
         const accountsResponse = await plaidClient.accountsGet({
           access_token: bank.accessToken,
@@ -52,7 +52,7 @@ export const getAccounts = async ({ userId }: getAccountsProps) => {
       return total + account.currentBalance;
     }, 0);
 
-    return parseStringify({ data: accounts, totalBanks, totalCurrentBalance });
+    return parseStringify({ data: accounts, totalBanks, totalCurrentBalance }) as GetAccountsReturn;
   } catch (error) {
     console.error("An error occurred while getting the accounts:", error);
   }
@@ -96,28 +96,29 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
       accessToken: bank?.accessToken,
     });
 
-    const account = {
+    const account: Account = {
       id: accountData.account_id,
       availableBalance: accountData.balances.available!,
       currentBalance: accountData.balances.current!,
       institutionId: institution.institution_id,
       name: accountData.name,
-      officialName: accountData.official_name,
+      officialName: accountData.official_name!,
       mask: accountData.mask!,
       type: accountData.type as string,
       subtype: accountData.subtype! as string,
       appwriteItemId: bank.$id,
+      shareableId: bank.shareableId,
     };
 
     // sort transactions by date such that the most recent transaction is first
-      const allTransactions = [...transactions, ...transferTransactions].sort(
+      const allTransactions: Transaction[] = [...transactions, ...transferTransactions].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
 
     return parseStringify({
       data: account,
       transactions: allTransactions,
-    });
+    }) as GetAccountReturn;
   } catch (error) {
     console.error("An error occurred while getting the account:", error);
   }
@@ -135,7 +136,7 @@ export const getInstitution = async ({
 
     const intitution = institutionResponse.data.institution;
 
-    return parseStringify(intitution);
+    return parseStringify(intitution) as Institution;
   } catch (error) {
     console.error("An error occurred while getting the accounts:", error);
   }
